@@ -2,3 +2,4 @@ requests
 GitPython
 Flask
 python-dotenv
+gunicorn

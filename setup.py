@@ -19,7 +19,7 @@ def setup_supervisor():
         program="github",
         program_root_path=pathlib.Path(pathlib.Path.cwd()),
         log_path=log_folder,
-        command=f"{pathlib.Path.cwd()}/venv/bin/gunicorn -b 0.0.0.0:5500 -w 1 github:sgi",
+        command=f"{pathlib.Path.cwd()}/venv/bin/python github.py",
         user="root"
     )
     repo_config = SupervisorConfig(
