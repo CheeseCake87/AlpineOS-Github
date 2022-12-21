@@ -1,0 +1,1 @@
+This project allows a Alpine Linux VPS to accept github webhooks to automate deployments.
