@@ -34,9 +34,6 @@ class Supervisor:
             raise FileNotFoundError(f"Supervisor config file not found at {self.main_config_location}")
         if not self.config_files_folder.exists():
             self.config_files_folder.mkdir()
-        with open(self.main_config_location, "r") as f:
-            if self.config_files_folder.name in f.read():
-                return
         with open(self.main_config_location, "w") as f:
             f.write(f"""
 [unix_http_server]
