@@ -1,25 +1,36 @@
+import os
 import pathlib
 import subprocess
 
+from dotenv import load_dotenv
+
+from utils import SupervisorConfig, Supervisor
+
 
 def setup_supervisor():
-    from utils import SupervisorConfig, Supervisor
+    load_dotenv()
+
+    log_folder = pathlib.Path(pathlib.Path.cwd() / "logs")
+
+    if not log_folder.exists():
+        log_folder.mkdir()
+
     github_config = SupervisorConfig(
         program="github",
         program_root_path=pathlib.Path(pathlib.Path.cwd()),
-        log_path=pathlib.Path(pathlib.Path.cwd() / "logs" / "github.log"),
+        log_path=log_folder,
         command=f"{pathlib.Path.cwd()}/venv/bin/gunicorn -b 0.0.0.0:5500 -w 1 github:sgi",
         user="root"
     )
     repo_config = SupervisorConfig(
         program="repo",
         program_root_path=pathlib.Path(pathlib.Path.cwd() / "repo"),
-        log_path=pathlib.Path(pathlib.Path.cwd() / "logs" / "repo.log"),
+        log_path=log_folder,
         command=f"{pathlib.Path(pathlib.Path.cwd() / 'repo')}/venv/bin/gunicorn -b 0.0.0.0:5000 -w 3 run:sgi",
         user="root"
     )
     Supervisor(
-        main_config_location=pathlib.Path("/etc/supervisord.conf"),
+        main_config_location=os.getenv("SUPERVISOR_CONFIG", pathlib.Path("/etc/supervisord.conf")),
         config_files_folder=pathlib.Path(pathlib.Path.cwd() / ".configs"),
         configs=[github_config, repo_config]
     )
