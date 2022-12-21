@@ -9,6 +9,7 @@ class SupervisorConfig:
     log_path: pathlib.Path
     command: str
     user: str
+    auto_start: str = "true"
 
 
 class Supervisor:
@@ -61,7 +62,7 @@ files = {self.config_files_folder}/*.ini
 directory={config.program_root_path}
 command={config.command}
 user={config.user}
-autostart=true
+autostart={config.auto_start}
 autorestart=true
 stdout_logfile={config.log_path}/{config.program}.error.log
 stderr_logfile={config.log_path}/{config.program}.general.log

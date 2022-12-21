@@ -22,6 +22,7 @@ class Github:
         if len(os.listdir(self.repo_folder)) == 0:
             Repo.clone_from(self.github_repo_url, self.repo_folder)
             setup_venv(self.repo_folder)
+            start_supervisor("repo")
 
     def pull(self):
         stop_supervisor("repo")

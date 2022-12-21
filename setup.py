@@ -27,7 +27,8 @@ def setup_supervisor():
         program_root_path=pathlib.Path(pathlib.Path.cwd() / "repo"),
         log_path=log_folder,
         command=f"{pathlib.Path(pathlib.Path.cwd() / 'repo')}/venv/bin/gunicorn -b 0.0.0.0:5000 -w 3 run:sgi",
-        user="root"
+        user="root",
+        auto_start="false"
     )
     Supervisor(
         main_config_location=os.getenv("SUPERVISOR_CONFIG", pathlib.Path("/etc/supervisord.conf")),
