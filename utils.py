@@ -92,6 +92,6 @@ command={config.command}
 user={config.user}
 autostart=true
 autorestart=true
-stdout_logfile={config.log_path}/error.log
-stderr_logfile={config.log_path}/general.log
+stdout_logfile={config.log_path}/{config.program}.error.log
+stderr_logfile={config.log_path}/{config.program}.general.log
             """.strip()))
