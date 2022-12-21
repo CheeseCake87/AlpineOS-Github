@@ -3,12 +3,15 @@ import os
 from dotenv import load_dotenv
 from flask import Flask, request
 
-from setup import restart_supervisor
+# from setup import restart_supervisor
 from utils.github import Github
 
 load_dotenv()
 
-github = Github(os.getenv("GIT"))
+git = os.getenv("GIT")
+print(git)
+
+github = Github(git)
 
 
 def create_app():
@@ -18,8 +21,11 @@ def create_app():
     @app.post('/')
     def webhook():
         if request.method == 'POST':
-            github.pull()
-            restart_supervisor("repo")
+            json = request.json
+            clone_url = json['repository']['clone_url']
+            if clone_url == git:
+                github.pull()
+                # restart_supervisor("repo")
             return 'ok', 200
 
     return app
