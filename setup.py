@@ -2,12 +2,12 @@ import os
 import pathlib
 import subprocess
 
-from dotenv import load_dotenv
-
 from utils import SupervisorConfig, Supervisor
 
 
 def setup_supervisor():
+    from dotenv import load_dotenv
+
     load_dotenv()
 
     log_folder = pathlib.Path(pathlib.Path.cwd() / "logs")

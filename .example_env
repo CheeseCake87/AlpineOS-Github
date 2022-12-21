@@ -1,2 +1,0 @@
-GIT="https://github.com/[repo]/[git].git"
-SUPERVISOR_CONFIG="/etc/supervisord.conf"
