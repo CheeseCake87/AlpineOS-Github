@@ -32,7 +32,7 @@ def setup_supervisor():
     )
     Supervisor(
         main_config_location=os.getenv("SUPERVISOR_CONFIG", pathlib.Path("/etc/supervisord.conf")),
-        config_files_folder=pathlib.Path(pathlib.Path.cwd() / ".configs"),
+        config_files_folder=pathlib.Path(pathlib.Path.cwd() / "configs"),
         configs=[github_config, repo_config]
     )
 
