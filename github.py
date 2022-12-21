@@ -3,13 +3,12 @@ import os
 from dotenv import load_dotenv
 from flask import Flask, request
 
-# from setup import restart_supervisor
+from setup import stop_supervisor, start_supervisor
 from utils.github import Github
 
 load_dotenv()
 
 git = os.getenv("GIT")
-print(git)
 
 github = Github(git)
 
@@ -24,8 +23,9 @@ def create_app():
             json = request.json
             clone_url = json['repository']['clone_url']
             if clone_url == git:
+                stop_supervisor("repo")
                 github.pull()
-                # restart_supervisor("repo")
+                start_supervisor("repo")
             return 'ok', 200
 
     return app
