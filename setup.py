@@ -63,3 +63,4 @@ if __name__ == '__main__':
     setup_alpine()
     setup_venv(pathlib.Path(pathlib.Path.cwd()))
     setup_supervisor()
+    restart_supervisor("github")
