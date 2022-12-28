@@ -1,7 +1,6 @@
 import os
 import pathlib
 import subprocess as sp
-from typing import Optional, Union
 
 from git import Repo
 
