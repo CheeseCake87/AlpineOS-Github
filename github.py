@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 from flask import Flask
 
 
-class AppController:
+class SatelliteAppController:
     process: sp.Popen = None
 
     def start(self):
@@ -24,6 +24,20 @@ class AppController:
             sp.Popen.terminate(self.process)
 
 
+class AppController:
+    satellite_app: SatelliteAppController()
+
+    def __init__(self, create_flask_app):
+        self.create_flask_app = create_flask_app
+        self.satellite_app = SatelliteAppController()
+
+    def __enter__(self):
+        return self.create_flask_app(self.satellite_app)
+
+    def __exit__(self, type_, value, traceback):
+        self.satellite_app.stop()
+
+
 class Github:
     github_repo_url: str
     repo_folder: pathlib.Path
@@ -34,13 +48,12 @@ class Github:
         self.repo_folder = pathlib.Path(pathlib.Path.cwd() / "repo")
         self.repo_folder.mkdir(exist_ok=True)
 
-    def setup(self, app_controller: AppController):
+    def setup(self):
         if len(os.listdir(self.repo_folder)) == 0:
             self.repo = Repo.clone_from(self.github_repo_url, self.repo_folder)
             sp.call([f'python3', '-m', 'venv', f'{self.repo_folder}/venv'])
             sp.call([f'{self.repo_folder}/venv/bin/python3', '-m', 'pip', 'install', '-r',
                      f'{self.repo_folder}/requirements.txt'])
-            app_controller.start()
 
     def pull(self):
         Repo(self.repo_folder).remotes.origin.pull()
@@ -51,12 +64,13 @@ load_dotenv()
 git = os.getenv("GIT")
 
 
-def create_app():
+def create_app(satellite_app):
     app = Flask(__name__)
-    app_controller = AppController()
 
     github = Github(git)
-    github.setup(app_controller)
+    github.setup()
+
+    satellite_app.start()
 
     # Index
     @app.get('/pull')
@@ -66,18 +80,17 @@ def create_app():
 
     @app.get('/start')
     def start_app():
-        app_controller.start()
+        satellite_app.start()
         return 'started', 200
 
     @app.get('/stop')
     def stop_app():
-        app_controller.stop()
+        satellite_app.stop()
         return 'stopped', 200
 
     return app
 
 
 if __name__ == "__main__":
-    create_app().run(port=5500, debug=True)
-else:
-    sgi = create_app()
+    with AppController(create_app) as app:
+        app.run(port=5500, host="0.0.0.0")

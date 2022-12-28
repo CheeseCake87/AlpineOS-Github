@@ -1,21 +1,9 @@
-This project allows a Alpine Linux VPS to accept github webhooks to automate deployments.
+This project is used to allow Flask apps to be auto updated via git webhook. 
 
-This only works with public repos.
+It works best with gitlab, with a deployment token. These can be found by going to
 
-Deploy this repo to the vps using git clone, then create a `.env` file with the value of the git url `GIT="https://github.com/[repo]/[git].git"`
+`Settings -> Repository -> Deploy tokens`
 
-Run the sh script to install Alpine Linux dependencies:
+Place the token url in a `.env` file in the root of your project. See `.env_example`
 
-`ash sh/alpine.sh`
-
-Run the setup script that will clone the repo and configure supervisor:
-
-`python3 setup.py`
-
-restart the alpine vps
-
-You can now point the nginx proxy to the following:
-
-website: `domain.com` -> `ip:5000`
-
-github webhook: `github.domain.com` -> `ip:5500`
+Running `python3 github.py` will start a Flask server on port 5500 that has some basic routes setup to allow git actions.
